@@ -26,10 +26,21 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        binding.play.setOnClickListener {
-            viewModel.onPlayButtonClicked(this)
-        }
+        setListeners()
+    }
 
+    private fun setListeners() {
+        binding.apply {
+            play.setOnClickListener {
+                viewModel.onPlayButtonClicked(this@MainActivity)
+            }
+            prev.setOnClickListener {
+                viewModel.setPrevTrack(this@MainActivity)
+            }
+            next.setOnClickListener {
+                viewModel.setNextTrack(this@MainActivity)
+            }
+        }
     }
 
     private fun updateUi(state: MainUiState) {
@@ -39,5 +50,10 @@ class MainActivity : AppCompatActivity() {
         binding.trackImage.setImageResource(track.imgResourceId)
         binding.title.text = track.title
         binding.play.setImageResource(playButtonImgResource)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.stopService(this)
     }
 }
