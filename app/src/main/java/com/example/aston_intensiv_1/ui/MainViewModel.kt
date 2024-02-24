@@ -3,10 +3,12 @@ package com.example.aston_intensiv_1.ui
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
-import com.example.aston_intensiv_1.MusicService
-import com.example.aston_intensiv_1.MusicService.Actions
+import com.example.aston_intensiv_1.musicservices.MusicService
+import com.example.aston_intensiv_1.musicservices.MusicService.Actions
 import com.example.aston_intensiv_1.data.Track
 import com.example.aston_intensiv_1.data.tracks
+import com.example.aston_intensiv_1.nextTrack
+import com.example.aston_intensiv_1.previousTrack
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -39,18 +41,12 @@ class MainViewModel : ViewModel() {
     }
 
     fun setPrevTrack(context: Context) {
-        var prevPosition = uiState.value.selectedTrack.position - 1
-        if (prevPosition < 0)
-            prevPosition = tracks.size - 1
-
+        val prevPosition = uiState.value.selectedTrack.position.previousTrack()
         changeTrack(context, prevPosition)
     }
 
     fun setNextTrack(context: Context) {
-        var nextPosition = uiState.value.selectedTrack.position + 1
-        if (nextPosition >= tracks.size )
-            nextPosition = 0
-
+        val nextPosition = uiState.value.selectedTrack.position.nextTrack()
         changeTrack(context, nextPosition)
     }
 

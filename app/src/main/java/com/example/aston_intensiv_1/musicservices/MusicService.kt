@@ -10,20 +10,23 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
-import com.example.aston_intensiv_1.MusicService.Actions.CHANGE_TRACK
-import com.example.aston_intensiv_1.MusicService.Actions.PLAY_TOGGLE
-import com.example.aston_intensiv_1.MusicService.Actions.START_SERVICE
-import com.example.aston_intensiv_1.MusicService.Actions.STOP_SERVICE
+import com.example.aston_intensiv_1.R
 import com.example.aston_intensiv_1.data.tracks
+import com.example.aston_intensiv_1.musicservices.MusicService.Actions.CHANGE_TRACK
+import com.example.aston_intensiv_1.musicservices.MusicService.Actions.PLAY_TOGGLE
+import com.example.aston_intensiv_1.musicservices.MusicService.Actions.START_SERVICE
+import com.example.aston_intensiv_1.musicservices.MusicService.Actions.STOP_SERVICE
+import com.example.aston_intensiv_1.nextTrack
+import com.example.aston_intensiv_1.previousTrack
+import com.example.aston_intensiv_1.ui.MainActivity
 
 const val MUSIC_SERVICE_ID = 10
 const val CHANNEL_ID = "channel_id"
 const val CHANNEL_NAME = "Deadline"
 
 class MusicService : Service() {
-
-
     private var player: MediaPlayer? = null
+    private var trackPosition: Int = 0
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -42,7 +45,7 @@ class MusicService : Service() {
     }
 
     private fun onStartService() {
-        updateNotification(0)
+        updateNotification(trackPosition)
     }
 
     private fun onPlayToggle() {
@@ -55,15 +58,20 @@ class MusicService : Service() {
         } else {
             player?.start()
         }
+        updateNotification(trackPosition)
     }
 
     private fun changeTrack(position: Int) {
-        val isContinuePlaying = player!!.isPlaying
-        player?.stop()
+        var isContinuePlaying = false
+        if (player != null) {
+            isContinuePlaying = player!!.isPlaying
+            player?.stop()
+        }
         player = MediaPlayer.create(this, tracks[position].musicResourceId)
         if (isContinuePlaying)
             player?.start()
 
+        trackPosition = position
         updateNotification(position)
     }
 
