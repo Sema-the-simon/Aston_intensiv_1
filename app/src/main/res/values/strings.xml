@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Aston_intensiv_1</string>
+    <string name="previous">previous</string>
+    <string name="play">play</string>
+    <string name="next">next</string>
+    <string name="title">Title</string>
+    <string name="track_image">track image</string>
+    <string name="notif_channel_description">Used for notify about current playing music</string>
 </resources>
