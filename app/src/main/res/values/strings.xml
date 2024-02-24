@@ -5,4 +5,5 @@
     <string name="next">next</string>
     <string name="title">Title</string>
     <string name="track_image">track image</string>
+    <string name="notif_channel_description">Used for notify about current playing music</string>
 </resources>

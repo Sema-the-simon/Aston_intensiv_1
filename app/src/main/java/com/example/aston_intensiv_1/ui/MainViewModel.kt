@@ -1,8 +1,9 @@
-package com.example.aston_intensiv_1
+package com.example.aston_intensiv_1.ui
 
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
+import com.example.aston_intensiv_1.MusicService
 import com.example.aston_intensiv_1.MusicService.Actions
 import com.example.aston_intensiv_1.data.Track
 import com.example.aston_intensiv_1.data.tracks

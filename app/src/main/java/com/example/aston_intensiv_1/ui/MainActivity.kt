@@ -1,11 +1,17 @@
-package com.example.aston_intensiv_1
+package com.example.aston_intensiv_1.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.aston_intensiv_1.R
 import com.example.aston_intensiv_1.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 
@@ -27,6 +33,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         setListeners()
+        checkNotificationPermission()
     }
 
     private fun setListeners() {
@@ -50,6 +57,16 @@ class MainActivity : AppCompatActivity() {
         binding.trackImage.setImageResource(track.imgResourceId)
         binding.title.text = track.title
         binding.play.setImageResource(playButtonImgResource)
+    }
+
+    private fun checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                0
+            )
+        }
     }
 
     override fun onDestroy() {

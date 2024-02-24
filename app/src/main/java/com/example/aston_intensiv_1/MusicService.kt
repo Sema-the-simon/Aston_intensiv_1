@@ -1,8 +1,10 @@
 package com.example.aston_intensiv_1
 
+import android.app.Notification
 import android.app.Service
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.IBinder
@@ -15,9 +17,11 @@ import com.example.aston_intensiv_1.MusicService.Actions.STOP_SERVICE
 import com.example.aston_intensiv_1.data.tracks
 
 const val MUSIC_SERVICE_ID = 10
-const val MUSIC_NOTIFICATION_CHANNEL = "Music"
+const val CHANNEL_ID = "channel_id"
+const val CHANNEL_NAME = "Deadline"
 
 class MusicService : Service() {
+
 
     private var player: MediaPlayer? = null
 
@@ -38,18 +42,7 @@ class MusicService : Service() {
     }
 
     private fun onStartService() {
-        val notification = NotificationCompat.Builder(this, "CHANNEL_ID")
-            .build()
-        ServiceCompat.startForeground(
-            this,
-            MUSIC_SERVICE_ID,
-            notification,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
-            } else {
-                0
-            }
-        )
+        updateNotification(0)
     }
 
     private fun onPlayToggle() {
@@ -70,12 +63,40 @@ class MusicService : Service() {
         player = MediaPlayer.create(this, tracks[position].musicResourceId)
         if (isContinuePlaying)
             player?.start()
+
+        updateNotification(position)
     }
 
     private fun onStopService() {
         player?.release()
         player = null
     }
+
+    private fun getNotification(position: Int): Notification {
+        val track = tracks[position]
+        val trackImage = BitmapFactory.decodeResource(resources, track.imgResourceId)
+        return NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setLargeIcon(trackImage)
+            .setContentTitle(track.title)
+            .setOnlyAlertOnce(true)
+            .build()
+    }
+
+    private fun updateNotification(trackPosition: Int) {
+        val notification = getNotification(trackPosition)
+        ServiceCompat.startForeground(
+            this,
+            MUSIC_SERVICE_ID,
+            notification,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+            } else {
+                0
+            }
+        )
+    }
+
 
     enum class Actions {
         START_SERVICE,
